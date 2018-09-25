@@ -7,12 +7,12 @@ namespace CSInterpreter
     interface IAST
     {
         Token Token { get; set; }
-        IAST Accept(ITreeVisitor visitor);
+        void Accept(ITreeVisitor visitor);
     }
     interface ITreeVisitor
     {
-        IAST Visit(BinOp binOp);
-        IAST Visit(Num num);
+        void Visit(BinOp binOp);
+        void Visit(Num num);
     }
     //Binary Operators
     class BinOp : IAST
@@ -23,9 +23,9 @@ namespace CSInterpreter
             this.Rigth = rigth;
             this.Token = token;
         }
-        public IAST Accept(ITreeVisitor visitor)
+        public void Accept(ITreeVisitor visitor)
         {
-            return visitor.Visit(this);
+            visitor.Visit(this);
         }
         public Token Token { get; set;}
         public IAST Left {get ; set; }
@@ -38,9 +38,9 @@ namespace CSInterpreter
         {
             this.Token = token;
         }        
-        public IAST Accept(ITreeVisitor visitor)
+        public void Accept(ITreeVisitor visitor)
         {
-            return visitor.Visit(this);
+            visitor.Visit(this);
         }
         public Token Token { get; set; }
     }

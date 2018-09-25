@@ -20,33 +20,36 @@ namespace CSInterpreter
         public int Interpret()
         {
             IAST tree = this._parser.Parse();
-            IAST result = this._visitor.Visit(tree);
+            IAST result = this._visitor.ReduceTree(tree);
             return result.Token.Value;
         }
     }
     class TreeVisitor : ITreeVisitor
     {
-        public IAST Visit (IAST tree)
+        private IAST reducedTree;
+        public IAST ReduceTree(IAST tree)
         {
-            return tree.Accept(this);
+            tree.Accept(this);
+            return reducedTree;
         }
-        public IAST Visit(BinOp binOp)
+        public void Visit(BinOp binOp)
         {
             if(binOp.Token.Type == TokenType.PLUS)
-                return new Num( new Token(TokenType.INTEGER, binOp.Left.Accept(this).Token.Value 
-                + binOp.Rigth.Accept(this).Token.Value));
+                reducedTree = new Num( new Token(TokenType.INTEGER, this.ReduceTree(binOp.Left).Token.Value 
+                + this.ReduceTree(binOp.Rigth).Token.Value));
             else if(binOp.Token.Type == TokenType.MINUS)
-                return new Num( new Token(TokenType.INTEGER, binOp.Left.Accept(this).Token.Value 
-                - binOp.Rigth.Accept(this).Token.Value));
+                reducedTree = new Num( new Token(TokenType.INTEGER, this.ReduceTree(binOp.Left).Token.Value 
+                - this.ReduceTree(binOp.Rigth).Token.Value));
             else if(binOp.Token.Type == TokenType.MUL)
-                return new Num( new Token(TokenType.INTEGER, binOp.Left.Accept(this).Token.Value 
-                * binOp.Rigth.Accept(this).Token.Value));
-            else return new Num( new Token(TokenType.INTEGER, binOp.Left.Accept(this).Token.Value 
-                / binOp.Rigth.Accept(this).Token.Value));
+                reducedTree = new Num( new Token(TokenType.INTEGER, this.ReduceTree(binOp.Left).Token.Value 
+                * this.ReduceTree(binOp.Rigth).Token.Value));
+            else if(binOp.Token.Type == TokenType.DIV)
+                reducedTree = new Num( new Token(TokenType.INTEGER, this.ReduceTree(binOp.Left).Token.Value 
+                / this.ReduceTree(binOp.Rigth).Token.Value));
         }
-        public IAST Visit(Num num)
+        public void Visit(Num num)
         {
-            return num;
+            reducedTree = num;
         }
     }
 
