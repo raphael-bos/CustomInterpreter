@@ -13,7 +13,7 @@ steps:
     - echo 5
   when:
     branch:
-    - dev-kubernetes
+    - master
     event:
       exclude:
       - pull_request
