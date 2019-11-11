@@ -1,0 +1,19 @@
+kind: pipeline
+# type: kubernetes
+name: default
+
+steps:
+- name: upload_image_dev
+  image: docker/compose:1.24.1
+  commands:
+    - echo Ola!
+    - echo 2
+    - echo 3
+    - echo 4
+    - echo 5
+  when:
+    branch:
+    - dev-kubernetes
+    event:
+      exclude:
+      - pull_request
