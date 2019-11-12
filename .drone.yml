@@ -1,5 +1,5 @@
 kind: pipeline
-# type: kubernetes
+type: kubernetes
 name: default
 
 steps:
@@ -9,6 +9,7 @@ steps:
     - echo Ola!
     - echo 2
     - echo 3
+    - sleep 60
     - echo 4
     - echo 5
     - echo 6
