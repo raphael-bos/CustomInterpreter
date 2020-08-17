@@ -26,7 +26,7 @@ namespace CSInterpreter
 
         private Exception error()
         {
-            return new Exception("Ivalid syntax");
+            return new Exception("Ivalid syntax.");
         }
         //Listando operandos em order de prioridade decrescente
 
@@ -67,7 +67,7 @@ namespace CSInterpreter
                 }
                 node = new BinOp(node, token, this.factor());
             }
-            return node; 
+            return node;
         }
         //Expressao Final
         //expr : term((PLUS|MINUS)term)*

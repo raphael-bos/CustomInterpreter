@@ -16,7 +16,7 @@ namespace CSInterpreter
 
         private Exception error()
         {
-            return new Exception("Error parsing input");
+            return new Exception(string.Format("Error parsing input at position: {0}", this._pos));
         }
         private void advance()
         {
