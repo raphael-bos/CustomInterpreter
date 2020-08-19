@@ -14,9 +14,21 @@ namespace CSInterpreter
             this.Type = type;
             this.Value = value;
         }
+        public Token(TokenType type, string value)
+        {
+            this.Type = type;
+            this.StringValue = value;
+        }
+        public Token(TokenType type, bool value)
+        {
+            this.Type = type;
+            this.BoolValue = value;
+        }
         public TokenType Type { get; set; }
         public char? CharValue { get; set; }
         public int Value { get; set; }
+        public string StringValue { get; set; }
+        public bool BoolValue {get; set; }
 
         public override string ToString()
         {

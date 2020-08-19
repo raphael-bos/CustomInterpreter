@@ -9,6 +9,13 @@ namespace CSInterpreter
         DIV,
         LPAREN,
         RPAREN,
+        STRING,
+        ENDPOINT,
+        FREQ,
+        AND,
+        OR,
+        INTERVAL,
+        TTI,
         EOF
     }
 }

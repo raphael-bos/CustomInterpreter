@@ -40,6 +40,62 @@ namespace CSInterpreter
             }
             return int.Parse(result);
         }
+        private string StringContent()
+        {
+            string result = "";
+            this.advance();
+            while(this._currentChar.HasValue && this._currentChar.Value != '\'')
+            {
+                result += this._currentChar;
+                this.advance();
+            }
+            this.advance();
+            return result;
+        }
+        private string StringOperator()
+        {
+            string result = "";
+            while(this._currentChar.HasValue && (char.IsLetterOrDigit(this._currentChar.Value) || this._currentChar.Value == ':'))
+            {
+                result += this._currentChar;
+                this.advance();
+            }
+            return result;
+        }
+        private string Endpoint()
+        {
+            string result = "";
+            while(this._currentChar.HasValue && (char.IsLetterOrDigit(this._currentChar.Value) || this._currentChar.Value == '.'))
+            {
+                result += this._currentChar;
+                this.advance();
+            }
+            return result;   
+        }
+        private Token GetTokenFromReserverKeyword(string keyword)
+        {
+            if(keyword.StartsWith("freq:"))
+            {
+                return new Token(TokenType.FREQ, keyword);
+            }
+            if(keyword == "E" )
+            {
+                return new Token(TokenType.AND, keyword);
+            }
+            if(keyword == "OU")
+            {
+                return new Token(TokenType.OR, keyword);
+            }
+            if(keyword.StartsWith("interval:"))
+            {
+                return new Token(TokenType.INTERVAL, keyword);
+            }
+            if(keyword.StartsWith("tti:"))
+            {
+                return new Token(TokenType.TTI, keyword);
+            }
+            throw new Exception(string.Format("Keyword not recognized: '{0}'", keyword));
+        }
         public Token GetNextToken()
         {
 
@@ -54,41 +110,23 @@ namespace CSInterpreter
                 {
                     return new Token(TokenType.INTEGER, this.Integer());
                 }
-                if(this._currentChar.Value == '+')
+                if(this._currentChar.Value == '\'')
                 {
-                    this.advance();
-                    return new Token(TokenType.PLUS, (char?) '+');
+                    return new Token(TokenType.STRING, this.StringContent());
                 }
-                if(this._currentChar.Value == '-')
+                if(this._currentChar.Value == '#')
                 {
                     this.advance();
-                    return new Token(TokenType.MINUS, (char?) '-');
+                    return new Token(TokenType.ENDPOINT, this.Endpoint());
                 }
-                if(this._currentChar.Value == '*')
+                if(char.IsLetter(this._currentChar.Value))
                 {
-                    this.advance();
-                    return new Token(TokenType.MUL, (char?) '*');
-                }
-                if(this._currentChar.Value == '/')
-                {
-                    this.advance();
-                    return new Token(TokenType.DIV, (char?) '/');
-                }
-
-                if(this._currentChar.Value == '(')
-                {
-                    this.advance();
-                    return new Token(TokenType.LPAREN, (char?) '(');
-                }
-
-                if(this._currentChar.Value == ')')
-                {
-                    this.advance();
-                    return new Token(TokenType.RPAREN, (char?) ')');
+                    Token token = this.GetTokenFromReserverKeyword(this.StringOperator());
+                    return token;
                 }
                 throw this.error();
             }
-            return new Token(TokenType.EOF,null);
+            return new Token(TokenType.EOF, (char?) null);
         }
     }
 }
