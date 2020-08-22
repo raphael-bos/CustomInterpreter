@@ -2,18 +2,14 @@ namespace CSInterpreter
 {
     enum TokenType
     {
-        INTEGER,
-        PLUS,
-        MINUS,
-        MUL,
-        DIV,
         LPAREN,
         RPAREN,
         STRING,
         ENDPOINT,
+        NUMBER,
         FREQ,
-        AND,
-        OR,
+        E,
+        OU,
         INTERVAL,
         TTI,
         EOF

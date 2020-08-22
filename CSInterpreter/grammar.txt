@@ -3,6 +3,10 @@ term: factor( (MUL|DIV) factor)*
 factor: INTEGER |(LPAREN expre RPAREN)
 
 expr: operand (operator)*
-operator: unaOperator | (binOperator operand)
-
-endpoint: #STRING | (LPAREN expre RPAREN)
+operator:   FREQ 
+            | TTI 
+            | INTERVAL
+            | E operand
+            | OU operand
+            
+operand: ENDPOINT | STRING | NUMBER | (LPAREN expr RPAREN)

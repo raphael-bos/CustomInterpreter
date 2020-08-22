@@ -13,6 +13,13 @@ namespace CSInterpreter
     {
         void Visit(BinOp binOp);
         void Visit(Num num);
+        void Visit (EndpointOp endpoint);
+        void Visit (StringOperand stringOperand);
+        void Visit(FreqOperator freOperator);
+        void Visit(TTIOperator ttiOperator);
+        void Visit(IntervalOperator intervalOperator);
+        void Visit(EOperator eOperator);
+        void Visit(OROperator orOperator);
     }
     //Binary Operators
     class BinOp : IAST
@@ -30,18 +37,5 @@ namespace CSInterpreter
         public Token Token { get; set;}
         public IAST Left {get ; set; }
         public IAST Rigth { get; set; }
-    }
-
-    class Num: IAST
-    {
-        public Num (Token token)
-        {
-            this.Token = token;
-        }        
-        public void Accept(ITreeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-        public Token Token { get; set; }
     }
 }

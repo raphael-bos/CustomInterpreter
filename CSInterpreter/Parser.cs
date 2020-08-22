@@ -32,13 +32,23 @@ namespace CSInterpreter
 
         // Operando da multiplicacao/divisao
         // factor : Integer
-        private IAST factor()
+        private IAST operand()
         {
             IAST node;
             Token token = this._currentToken;
-            if(token.Type == TokenType.INTEGER)
+            if(token.Type == TokenType.ENDPOINT)
             {
-                this.eat(TokenType.INTEGER);
+                this.eat(TokenType.ENDPOINT);
+                node = new EndpointOp(token);
+            }
+            else if(token.Type == TokenType.STRING)
+            {
+                this.eat(TokenType.STRING);
+                node = new StringOperand(token);
+            }
+            else if(token.Type == TokenType.NUMBER)
+            {
+                this.eat(TokenType.NUMBER);
                 node = new Num(token);
             }
             else
@@ -51,21 +61,34 @@ namespace CSInterpreter
         }
         //Operando da soma/subtracao
         //term : factor((MUL|DIV)factor)*
-        private IAST term()
+        private IAST get_operator(IAST operand)
         {
-            IAST node = this.factor();
-            while(new TokenType[]{TokenType.MUL, TokenType.DIV}.Contains(this._currentToken.Type))
+            IAST node;
+            Token token = this._currentToken;
+            if(token.Type == TokenType.FREQ)
             {
-                Token token = this._currentToken;
-                if(token.Type == TokenType.MUL)
-                {
-                    this.eat(TokenType.MUL);
-                }
-                else if(token.Type == TokenType.DIV)
-                {
-                    this.eat(TokenType.DIV);
-                }
-                node = new BinOp(node, token, this.factor());
+                this.eat(TokenType.FREQ);
+                node = new FreqOperator(operand, token);
+            }
+            else if(token.Type == TokenType.TTI)
+            {
+                this.eat(TokenType.TTI);
+                node = new TTIOperator(operand, token);
+            }
+            else if(token.Type == TokenType.INTERVAL)
+            {
+                this.eat(TokenType.INTERVAL);
+                node = new IntervalOperator(operand, token);
+            }
+            else if (token.Type == TokenType.E)
+            {
+                this.eat(TokenType.E);
+                node = new EOperator(operand, token, this.operand());
+            }
+            else
+            {
+                this.eat(TokenType.OU);
+                node = new OROperator(operand, token, this.operand());
             }
             return node;
         }
@@ -73,23 +96,25 @@ namespace CSInterpreter
         //expr : term((PLUS|MINUS)term)*
         private IAST expr()
         {
-            IAST node = this.term();
-
-            while(new TokenType[]{TokenType.PLUS,TokenType.MINUS}.Contains(this._currentToken.Type))
+            IAST node = this.operand();
+            while(this.isOperatorToken(this._currentToken.Type))
             {
-                Token token = this._currentToken;
-
-                if(token.Type == TokenType.PLUS)
-                {
-                    this.eat(TokenType.PLUS);
-                }
-                else if(token.Type == TokenType.MINUS)
-                {
-                    this.eat(TokenType.MINUS);
-                }
-                node = new BinOp(node, token, this.term());
+                node = this.get_operator(node);
             }
             return node;
+        }
+
+        private bool isOperatorToken(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.FREQ: return true;
+                case TokenType.TTI: return true;
+                case TokenType.INTERVAL: return true;
+                case TokenType.E: return true;
+                case TokenType.OU: return true;
+                default: return false;
+            }
         }
     }
 }

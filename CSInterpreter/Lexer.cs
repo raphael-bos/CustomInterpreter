@@ -72,7 +72,7 @@ namespace CSInterpreter
             }
             return result;   
         }
-        private Token GetTokenFromReserverKeyword(string keyword)
+        private Token GetTokenFromReservedKeyword(string keyword)
         {
             if(keyword.StartsWith("freq:"))
             {
@@ -80,11 +80,11 @@ namespace CSInterpreter
             }
             if(keyword == "E" )
             {
-                return new Token(TokenType.AND, keyword);
+                return new Token(TokenType.E, keyword);
             }
             if(keyword == "OU")
             {
-                return new Token(TokenType.OR, keyword);
+                return new Token(TokenType.OU, keyword);
             }
             if(keyword.StartsWith("interval:"))
             {
@@ -106,12 +106,19 @@ namespace CSInterpreter
                     this.skipWhiteSpace();
                     continue;
                 }
-                if(char.IsDigit(this._currentChar.Value))
+                if(this._currentChar.Value == '(')
                 {
-                    return new Token(TokenType.INTEGER, this.Integer());
+                    this.advance();
+                    return new Token(TokenType.LPAREN, "(");
+                }
+                if(this._currentChar.Value == ')')
+                {
+                    this.advance();
+                    return new Token(TokenType.RPAREN, ")");
                 }
                 if(this._currentChar.Value == '\'')
                 {
+                    this.advance();
                     return new Token(TokenType.STRING, this.StringContent());
                 }
                 if(this._currentChar.Value == '#')
@@ -121,12 +128,12 @@ namespace CSInterpreter
                 }
                 if(char.IsLetter(this._currentChar.Value))
                 {
-                    Token token = this.GetTokenFromReserverKeyword(this.StringOperator());
+                    Token token = this.GetTokenFromReservedKeyword(this.StringOperator());
                     return token;
                 }
                 throw this.error();
             }
-            return new Token(TokenType.EOF, (char?) null);
+            return new Token(TokenType.EOF, null);
         }
     }
 }
