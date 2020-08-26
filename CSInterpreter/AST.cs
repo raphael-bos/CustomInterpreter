@@ -15,7 +15,7 @@ namespace CSInterpreter
         void Visit(Num num);
         void Visit (EndpointOp endpoint);
         void Visit (StringOperand stringOperand);
-        void Visit(FreqOperator freOperator);
+        void Visit(FreqOperator freqOperator);
         void Visit(TTIOperator ttiOperator);
         void Visit(IntervalOperator intervalOperator);
         void Visit(EOperator eOperator);
